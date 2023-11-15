@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.filter
@@ -22,7 +23,28 @@ import logcat.logcat
 
 private const val RECEIVED_SCANS_BUFFER = 2
 
-class DataWedgeRepository(applicationContext: Context) {
+interface DataWedgeRepository {
+    val scans: SharedFlow<DataWedgeScan>
+
+    suspend fun getScanners(): List<DataWedgeScanner>
+    suspend fun getConfiguration(activeProfileName: String): DataWedgeConfig
+    suspend fun getActiveProfile(): DataWedgeProfile
+    suspend fun getVersions(): DataWedgeVersion
+    suspend fun addScan(dataWedgeScan: DataWedgeScan)
+    fun isScanIntent(intent: Intent): Boolean
+    suspend fun createProfile(
+        profileName: String,
+        packageName: String,
+        profileIntentAction: String,
+        profileIntentDelivery: String
+    )
+
+    companion object {
+        // needed for extension method getInstance()
+    }
+}
+
+class DataWedgeRepositoryImpl(applicationContext: Context) : DataWedgeRepository {
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
 
     private val receiver = DataWedgeRepositoryReceiver(scope)
@@ -30,12 +52,8 @@ class DataWedgeRepository(applicationContext: Context) {
     private val dwInterface = DWInterface(applicationContext)
 
     private val receivedScansChannel: Channel<DataWedgeScan> = Channel(RECEIVED_SCANS_BUFFER)
-    val scans = receivedScansChannel.consumeAsFlow()
+    override val scans = receivedScansChannel.consumeAsFlow()
         .shareIn(scope, SharingStarted.Eagerly, RECEIVED_SCANS_BUFFER)
-
-    companion object {
-        // needed for extension method getInstance()
-    }
 
     init {
         val intentFilter = IntentFilter()
@@ -76,14 +94,14 @@ class DataWedgeRepository(applicationContext: Context) {
         }
     }
 
-    fun isScanIntent(intent: Intent): Boolean =
+    override fun isScanIntent(intent: Intent): Boolean =
         intent.hasExtra(DWInterface.DATAWEDGE_SCAN_EXTRA_DATA_STRING)
 
-    suspend fun addScan(dataWedgeScan: DataWedgeScan) {
+    override suspend fun addScan(dataWedgeScan: DataWedgeScan) {
         receivedScansChannel.send(dataWedgeScan)
     }
 
-    suspend fun getVersions(): DataWedgeVersion {
+    override suspend fun getVersions(): DataWedgeVersion {
         return withTimeout(3000) {
             dwInterface.sendCommandString(DWInterface.DATAWEDGE_SEND_GET_VERSION, "")
             receiver.intents
@@ -93,7 +111,7 @@ class DataWedgeRepository(applicationContext: Context) {
         }
     }
 
-    suspend fun getActiveProfile(): DataWedgeProfile {
+    override suspend fun getActiveProfile(): DataWedgeProfile {
         return withTimeout(3000) {
             dwInterface.sendCommandString(DWInterface.DATAWEDGE_SEND_GET_ACTIVE_PROFILE, "")
             receiver.intents
@@ -103,7 +121,7 @@ class DataWedgeRepository(applicationContext: Context) {
         }
     }
 
-    suspend fun getConfiguration(activeProfileName: String): DataWedgeConfig {
+    override suspend fun getConfiguration(activeProfileName: String): DataWedgeConfig {
         return withTimeout(3000) {
             val bMain = bundleOf(
                 "PROFILE_NAME" to activeProfileName,
@@ -120,7 +138,7 @@ class DataWedgeRepository(applicationContext: Context) {
         }
     }
 
-    suspend fun getScanners(): List<DataWedgeScanner> {
+    override suspend fun getScanners(): List<DataWedgeScanner> {
         return withTimeout(3000) {
             dwInterface.sendCommandString(
                 DWInterface.DATAWEDGE_SEND_GET_ENUMERATE_SCANNERS,
@@ -178,7 +196,7 @@ class DataWedgeRepository(applicationContext: Context) {
      * configuration) but to keep it simple, we just define a minimum of 6.5 for configuration
      * functionality
      */
-    suspend fun createProfile(
+    override suspend fun createProfile(
         profileName: String,
         packageName: String,
         profileIntentAction: String,
@@ -200,10 +218,12 @@ class DataWedgeRepository(applicationContext: Context) {
                 "RESET_CONFIG" to "true",
                 "PARAM_LIST" to bundleOf()
             ),
-            "APP_LIST" to arrayOf(bundleOf(
-                "PACKAGE_NAME" to packageName,
-                "ACTIVITY_LIST" to arrayOf("*")
-            ))
+            "APP_LIST" to arrayOf(
+                bundleOf(
+                    "PACKAGE_NAME" to packageName,
+                    "ACTIVITY_LIST" to arrayOf("*")
+                )
+            )
         )
 
         dwInterface.sendCommandBundle(DWInterface.DATAWEDGE_SEND_SET_CONFIG, profileConfig)

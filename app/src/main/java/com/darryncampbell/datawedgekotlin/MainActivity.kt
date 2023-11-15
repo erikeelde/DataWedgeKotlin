@@ -20,10 +20,6 @@ class MainActivity : ComponentActivity() {
     companion object {
         const val PROFILE_NAME = "DataWedgeKotlinDemo"
         const val PROFILE_INTENT_ACTION = "com.darryncampbell.datawedgekotlin.SCAN"
-
-        // Use "0" for Start Activity, "1" for Start Service, "2" for Broadcast
-        const val PROFILE_INTENT_START_ACTIVITY = "0"
-        const val PROFILE_INTENT_START_BROADCAST = "2"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

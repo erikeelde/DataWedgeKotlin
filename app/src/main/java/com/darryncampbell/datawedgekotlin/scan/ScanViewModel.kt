@@ -11,6 +11,7 @@ import com.darryncampbell.datawedgekotlin.MainActivity
 import com.darryncampbell.datawedgekotlin.ScansPersister
 import com.darryncampbell.datawedgekotlin.getInstance
 import com.example.datawedgerepository.DWInterface
+import com.example.datawedgerepository.DWInterface.Companion.PROFILE_INTENT_START_ACTIVITY
 import com.example.datawedgerepository.DataWedgeRepository
 import com.example.datawedgerepository.DataWedgeScan
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,7 +42,7 @@ class ScanViewModel(applicationContext: Context, savedStateHandle: SavedStateHan
                         MainActivity.PROFILE_NAME,
                         applicationContext.packageName,
                         MainActivity.PROFILE_INTENT_ACTION,
-                        MainActivity.PROFILE_INTENT_START_ACTIVITY
+                        PROFILE_INTENT_START_ACTIVITY
                     )
             }
         }
