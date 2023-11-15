@@ -7,6 +7,7 @@ data class DataWedgeVersion(
     val dataWedgeVersion: String,
     val decoderLibraryVersion: String,
     val scannerFirmwareVersion: Array<String>?,
+    val simulScanVersion: String?,
 ) {
     companion object {
         fun fromBundle(bundle: Bundle): DataWedgeVersion {
@@ -14,12 +15,14 @@ data class DataWedgeVersion(
             val dataWedgeVersion =
                 bundle.getString(DWInterface.DATAWEDGE_RETURN_VERSION_DATAWEDGE, null)!!
             val decoderLibraryVersion = bundle.getString("DECODER_LIBRARY", null)!!
-            val scannerFirmwareVersion = bundle.getStringArray("SCANNER_FIRMWARE")
+            val scannerFirmwareVersion: Array<String>? = bundle.getStringArray("SCANNER_FIRMWARE")
+            val simulScanVersion = bundle.getString("SIMULSCAN", null)
             return DataWedgeVersion(
                 barcodeScanningVersion = barcodeScanningVersion,
                 dataWedgeVersion = dataWedgeVersion,
                 decoderLibraryVersion = decoderLibraryVersion,
-                scannerFirmwareVersion = scannerFirmwareVersion
+                scannerFirmwareVersion = scannerFirmwareVersion,
+                simulScanVersion = simulScanVersion
             )
         }
     }
