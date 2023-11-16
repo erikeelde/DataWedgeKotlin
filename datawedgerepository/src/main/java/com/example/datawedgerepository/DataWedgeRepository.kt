@@ -6,6 +6,7 @@ import android.content.IntentFilter
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import io.github.z4kn4fein.semver.toVersion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -38,6 +39,8 @@ interface DataWedgeRepository {
         profileIntentAction: String,
         profileIntentDelivery: String
     )
+
+    suspend fun supportsConfigCreation(): Boolean
 
     companion object {
         // needed for extension method getInstance()
@@ -243,5 +246,11 @@ class DataWedgeRepositoryImpl(applicationContext: Context) : DataWedgeRepository
         profileConfig.putBundle("PLUGIN_CONFIG", intentConfig)
 
         dwInterface.sendCommandBundle(DWInterface.DATAWEDGE_SEND_SET_CONFIG, profileConfig)
+    }
+
+    override suspend fun supportsConfigCreation(): Boolean {
+        val versions = getVersions()
+        val dataWedgeVersion = versions.dataWedgeVersion.toVersion(strict = false)
+        return dataWedgeVersion >= "6.5.0".toVersion()
     }
 }

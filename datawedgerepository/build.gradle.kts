@@ -25,4 +25,5 @@ dependencies {
     implementation(libs.com.squareup.logcat)
     implementation(libs.org.jetbrains.kotlinx.kotlinx.serialization.json)
     implementation(libs.org.jetbrains.kotlinx.kotlinx.coroutines.core)
+    implementation(libs.io.github.z4kn4fein.semver)
 }

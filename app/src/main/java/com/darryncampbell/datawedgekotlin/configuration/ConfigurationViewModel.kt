@@ -48,9 +48,8 @@ class ConfigurationViewModel(
 
     init {
         viewModelScope.launch {
-            val versions = dataWedgeRepository.getVersions()
-            val dataWedgeVersion = versions.dataWedgeVersion
-            if (dataWedgeVersion >= "6.5") {
+
+            if (dataWedgeRepository.supportsConfigCreation()) {
                 val profile = dataWedgeRepository.getActiveProfile()
                 val configuration = dataWedgeRepository.getConfiguration(profile.name)
                 val scanners = dataWedgeRepository.getScanners()
@@ -69,7 +68,7 @@ class ConfigurationViewModel(
                 }
             } else {
                 state.update {
-                    ConfigurationViewState.LowVersion(versions)
+                    ConfigurationViewState.LowVersion(dataWedgeRepository.getVersions())
                 }
             }
         }

@@ -34,9 +34,7 @@ class ScanViewModel(applicationContext: Context, savedStateHandle: SavedStateHan
 
     init {
         viewModelScope.launch {
-            val versions = dataWedgeRepository.getVersions()
-            val dataWedgeVersion = versions.dataWedgeVersion
-            if (dataWedgeVersion >= "6.5") {
+            if (dataWedgeRepository.supportsConfigCreation()) {
                 dataWedgeRepository
                     .createProfile(
                         MainActivity.PROFILE_NAME,

@@ -42,6 +42,7 @@ com-squareup-okio = { module = "com.squareup.okio:okio", version.ref = "com-squa
 junit = { module = "junit:junit", version.ref = "junit" }
 org-jetbrains-kotlinx-kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "org-jetbrains-kotlinx-coroutines" }
 org-jetbrains-kotlinx-kotlinx-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.1"
+io-github-z4kn4fein-semver = "io.github.z4kn4fein:semver:1.4.2"
 org-jetbrains-kotlinx-kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"
 se-eelde-toggles-toggles-flow = "se.eelde.toggles:toggles-flow:0.0.1"
 se-eelde-toggles-toggles-flow-noop = "se.eelde.toggles:toggles-flow-noop:0.0.1"
