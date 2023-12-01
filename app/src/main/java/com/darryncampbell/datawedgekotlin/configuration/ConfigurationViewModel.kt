@@ -9,12 +9,10 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.darryncampbell.datawedgekotlin.DataWedgeHolder
-import com.example.datawedgerepository.DWInterface
 import com.darryncampbell.datawedgekotlin.ScansPersister
-import com.example.datawedgerepository.DataWedgeRepository
+import com.example.datawedgerepository.DWInterface
 import com.example.datawedgerepository.DataWedgeScanner
 import com.example.datawedgerepository.DataWedgeVersion
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -53,7 +51,6 @@ class ConfigurationViewModel(
                 val profile = dataWedgeRepository.getActiveProfile()
                 val configuration = dataWedgeRepository.getConfiguration(profile.name)
                 val scanners = dataWedgeRepository.getScanners()
-                delay(2000)
                 state.update {
                     ConfigurationViewState.Loaded(
                         currentProfileName = profile.name,
@@ -160,6 +157,7 @@ class ConfigurationViewModel(
         scansPersister.clear()
     }
 
+    @Suppress("LongParameterList")
     fun setConfigForDecoder(
         profileName: String,
         ean8Value: Boolean,

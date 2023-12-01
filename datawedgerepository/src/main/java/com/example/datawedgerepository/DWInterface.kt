@@ -55,8 +55,9 @@ class DWInterface(private val applicationContext: Context) {
         val dwIntent = Intent()
         dwIntent.action = DATAWEDGE_SEND_ACTION
         dwIntent.putExtra(command, parameter)
-        if (sendResult)
+        if (sendResult) {
             dwIntent.putExtra(DATAWEDGE_EXTRA_SEND_RESULT, "true")
+        }
         applicationContext.sendBroadcast(dwIntent)
     }
 
@@ -67,6 +68,7 @@ class DWInterface(private val applicationContext: Context) {
         applicationContext.sendBroadcast(dwIntent)
     }
 
+    @Suppress("LongParameterList")
     fun setConfigForDecoder(
         profileName: String,
         ean8Value: Boolean,
@@ -141,7 +143,8 @@ class DWInterface(private val applicationContext: Context) {
 
     fun setActiveScanner(scannerIndex: Int) {
         sendCommandString(
-            DATAWEDGE_SEND_SWITCH_SCANNER, "" + scannerIndex,
+            DATAWEDGE_SEND_SWITCH_SCANNER,
+            "" + scannerIndex,
             sendResult = true
         )
     }

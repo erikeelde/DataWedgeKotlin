@@ -16,17 +16,14 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.datawedgerepository.DataWedgeScan
 import com.darryncampbell.datawedgekotlin.ui.theme.MyApplicationTheme
+import com.example.datawedgerepository.DataWedgeScan
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -48,7 +45,8 @@ fun ScanView(scanViewModel: ScanViewModel, navigateToConfiguration: () -> Unit) 
                                 imageVector = Icons.Filled.Add,
                                 contentDescription = null
                             )
-                        })
+                        }
+                    )
                     NavigationBarItem(
                         selected = false,
                         onClick = { navigateToConfiguration() },
@@ -57,7 +55,8 @@ fun ScanView(scanViewModel: ScanViewModel, navigateToConfiguration: () -> Unit) 
                                 imageVector = Icons.Filled.AccountBox,
                                 contentDescription = null
                             )
-                        })
+                        }
+                    )
                 }
             }
         ) { paddingValues ->
@@ -109,7 +108,8 @@ fun ScanViewLoaded(
         LazyColumn {
             dataWedgeScans.forEach {
                 item {
-                    ListItem(headlineContent = { Text(it.data) },
+                    ListItem(
+                        headlineContent = { Text(it.data) },
                         supportingContent = { Text(text = it.symbology) },
                         trailingContent = { Text(text = instantToString(it.scannedInstant)) }
                     )

@@ -1,0 +1,10 @@
+
+naming:
+  VariableNaming:
+    variablePattern: '[a-z][A-Za-z0-9]*'
+    privateVariablePattern: '(_)?[a-z][A-Za-z0-9]*'
+    # TopLevelPropertyNaming:
+    # constantPattern: '[A-Z][A-Za-z0-9]*'
+  FunctionNaming:
+    ignoreAnnotated:
+      - 'Composable'

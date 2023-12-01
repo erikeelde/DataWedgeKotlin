@@ -104,4 +104,3 @@ class ScanViewModel(applicationContext: Context, savedStateHandle: SavedStateHan
         }
     }
 }
-

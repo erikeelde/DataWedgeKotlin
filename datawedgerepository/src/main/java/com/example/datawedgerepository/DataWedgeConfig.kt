@@ -29,13 +29,17 @@ data class DataWedgeConfig(
 
             val illuminationModeEnabled = barcodeProps.getString("illumination_mode")
             val illuminationMode =
-                (illuminationModeEnabled != null && illuminationModeEnabled.lowercase(Locale.ROOT)
-                    .equals("torch"))
+                (
+                    illuminationModeEnabled != null && illuminationModeEnabled.lowercase(Locale.ROOT)
+                        .equals("torch")
+                    )
 
             val picklistModeEnabled = barcodeProps.getString("picklist")
             val pickListMode =
-                (picklistModeEnabled != null && !picklistModeEnabled.lowercase(Locale.ROOT)
-                    .equals("0"))
+                (
+                    picklistModeEnabled != null && !picklistModeEnabled.lowercase(Locale.ROOT)
+                        .equals("0")
+                    )
 
             return DataWedgeConfig(ean8, ean13, code39, code128, illuminationMode, pickListMode)
         }

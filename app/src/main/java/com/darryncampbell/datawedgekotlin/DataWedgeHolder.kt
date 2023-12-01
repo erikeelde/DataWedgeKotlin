@@ -11,5 +11,5 @@ object DataWedgeHolder {
         dataWedgeRepository = DataWedgeRepositoryImpl(context)
     }
 
-    fun get() : DataWedgeRepository = dataWedgeRepository!!
+    fun get(): DataWedgeRepository = dataWedgeRepository!!
 }
