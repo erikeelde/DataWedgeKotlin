@@ -3,6 +3,7 @@ package com.example.datawedgerepository
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -21,9 +22,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import logcat.logcat
 
-
+private const val DEFAULT_TIMEOUT = 3000L
 private const val RECEIVED_SCANS_BUFFER = 2
 
+@Suppress("TooManyFunctions")
 class DataWedgeRepositoryImpl(applicationContext: Context) : DataWedgeRepository {
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
 
@@ -82,7 +84,7 @@ class DataWedgeRepositoryImpl(applicationContext: Context) : DataWedgeRepository
     }
 
     override suspend fun getVersions(): DataWedgeVersion {
-        return withTimeout(3000) {
+        return withTimeout(DEFAULT_TIMEOUT) {
             dwInterface.sendCommandString(DWInterface.DATAWEDGE_SEND_GET_VERSION, "")
             receiver.intents
                 .filter { it.hasExtra(DWInterface.DATAWEDGE_RETURN_VERSION) }
@@ -92,7 +94,7 @@ class DataWedgeRepositoryImpl(applicationContext: Context) : DataWedgeRepository
     }
 
     override suspend fun getActiveProfile(): DataWedgeProfile {
-        return withTimeout(3000) {
+        return withTimeout(DEFAULT_TIMEOUT) {
             dwInterface.sendCommandString(DWInterface.DATAWEDGE_SEND_GET_ACTIVE_PROFILE, "")
             receiver.intents
                 .filter { it.hasExtra(DWInterface.DATAWEDGE_RETURN_GET_ACTIVE_PROFILE) }
@@ -102,7 +104,7 @@ class DataWedgeRepositoryImpl(applicationContext: Context) : DataWedgeRepository
     }
 
     override suspend fun getConfiguration(activeProfileName: String): DataWedgeConfig {
-        return withTimeout(3000) {
+        return withTimeout(DEFAULT_TIMEOUT) {
             val bMain = bundleOf(
                 "PROFILE_NAME" to activeProfileName,
                 "PLUGIN_CONFIG" to bundleOf(
@@ -119,7 +121,7 @@ class DataWedgeRepositoryImpl(applicationContext: Context) : DataWedgeRepository
     }
 
     override suspend fun getScanners(): List<DataWedgeScanner> {
-        return withTimeout(3000) {
+        return withTimeout(DEFAULT_TIMEOUT) {
             dwInterface.sendCommandString(
                 DWInterface.DATAWEDGE_SEND_GET_ENUMERATE_SCANNERS,
                 ""
@@ -138,17 +140,26 @@ class DataWedgeRepositoryImpl(applicationContext: Context) : DataWedgeRepository
     }
 
     private fun parseEnumerateScanners(receivedIntent: Intent): List<DataWedgeScanner> {
-        try {
-            val enumeratedScanners =
-                receivedIntent.getSerializableExtra(DWInterface.DATAWEDGE_RETURN_ENUMERATE_SCANNERS) as ArrayList<Bundle>?
-                    ?: return listOf()
+        return try {
+            val enumeratedScanners: ArrayList<Bundle> =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    receivedIntent
+                        .getSerializableExtra(
+                            DWInterface.DATAWEDGE_RETURN_ENUMERATE_SCANNERS,
+                            ArrayList::class.java
+                        ) as ArrayList<Bundle>? ?: arrayListOf()
+                } else {
+                    receivedIntent
+                        .getSerializableExtra(
+                            DWInterface.DATAWEDGE_RETURN_ENUMERATE_SCANNERS
+                        ) as ArrayList<Bundle>? ?: arrayListOf()
+                }
             return enumeratedScanners.map {
                 DataWedgeScanner.fromBundle(it)
             }
-
         } catch (e: ClassCastException) {
-            e.printStackTrace()
-            return listOf()
+            logcat { e.stackTraceToString() }
+            listOf()
         }
     }
 
@@ -168,7 +179,6 @@ class DataWedgeRepositoryImpl(applicationContext: Context) : DataWedgeRepository
 
         return DataWedgeConfig.fromBundle(barcodeProps)
     }
-
 
     /**
      * If the version is <= 6.5 we reduce the amount of configuration available.  There are
@@ -215,7 +225,7 @@ class DataWedgeRepositoryImpl(applicationContext: Context) : DataWedgeRepository
             IntentOutputConfiguration(
                 enabled = true,
                 intentAction = profileIntentAction,
-                intentDelivery = IntentOutputIntentDelivery.Activity
+                intentDelivery = profileIntentDelivery
             ).asBundle(),
             KeyboardOutputConfiguration(enabled = false).asBundle(),
             BarcodeInputConfiguration(enabled = true).asBundle()
@@ -225,7 +235,6 @@ class DataWedgeRepositoryImpl(applicationContext: Context) : DataWedgeRepository
 
         dwInterface.sendCommandBundle(DWInterface.DATAWEDGE_SEND_SET_CONFIG, profileConfig)
     }
-
 
     override suspend fun supportsConfigCreation(): Boolean {
         val versions = getVersions()

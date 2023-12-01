@@ -22,7 +22,8 @@ fun ApplicationView(
         composable("configuration") {
             ConfigurationView(
                 configurationViewModel = viewModel(factory = ConfigurationViewModel.Factory),
-                navigateToScan = { navController.navigate("scan") })
+                navigateToScan = { navController.navigate("scan") }
+            )
         }
     }
 }

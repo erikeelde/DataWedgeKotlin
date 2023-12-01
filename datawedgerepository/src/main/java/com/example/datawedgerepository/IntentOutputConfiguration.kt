@@ -3,10 +3,8 @@ package com.example.datawedgerepository
 import android.os.Bundle
 import androidx.core.os.bundleOf
 
-
-
 enum class IntentOutputIntentDelivery(val datawedgeConstant: Int) {
-    Activity(0), Service(1), Broadcast(2);
+    Activity(0), Service(1), Broadcast(2)
 }
 
 // https://techdocs.zebra.com/datawedge/latest/guide/api/setconfig/#scannerinputparameters

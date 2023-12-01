@@ -20,7 +20,7 @@ class ScansPersister(private val applicationContext: Context) {
 
             val string = bufferedSource.readUtf8()
             return Json.decodeFromString<List<DataWedgeScan>>(string)
-        } catch (fileNotFoundException: FileNotFoundException) {
+        } catch (_: FileNotFoundException) {
             return listOf()
         }
     }

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android1810)
     kotlin("plugin.serialization") version "1.9.20"
+    id("io.gitlab.arturbosch.detekt") version "1.23.3"
 }
 
 android {
@@ -35,6 +36,13 @@ kotlin {
     }
 }
 
+detekt {
+    autoCorrect = true
+    buildUponDefaultConfig = true
+    baseline = project.file("config/detekt/baseline.xml")
+    config = project.files("config/detekt/detekt.yml")
+}
+
 dependencies {
     implementation(projects.datawedgerepository)
 
@@ -65,4 +73,6 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.ui.test.manifest)
+
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.3")
 }

@@ -29,21 +29,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.datawedgerepository.DataWedgeScanner
-import com.example.datawedgerepository.DataWedgeVersion
 import com.darryncampbell.datawedgekotlin.ui.SwitchWithLabel
 import com.darryncampbell.datawedgekotlin.ui.theme.MyApplicationTheme
+import com.example.datawedgerepository.DataWedgeScanner
+import com.example.datawedgerepository.DataWedgeVersion
 import kotlinx.coroutines.launch
-
-interface ConfigurationActions {
-    fun ean8(enabled: Boolean)
-    fun ean13(enabled: Boolean)
-    fun code39(enabled: Boolean)
-    fun code128(enabled: Boolean)
-    fun clearHistory()
-    fun illumination(enabled: Boolean)
-    fun picklist(enabled: Boolean)
-}
 
 @Composable
 fun ConfigurationView(
@@ -64,7 +54,8 @@ fun ConfigurationView(
                                 imageVector = Icons.Filled.Add,
                                 contentDescription = null
                             )
-                        })
+                        }
+                    )
                     NavigationBarItem(
                         selected = true,
                         onClick = { },
@@ -73,7 +64,8 @@ fun ConfigurationView(
                                 imageVector = Icons.Filled.AccountBox,
                                 contentDescription = null
                             )
-                        })
+                        }
+                    )
                 }
             }
         ) { paddingValues ->
@@ -126,7 +118,6 @@ fun ConfigurationView(
     configurationActions: ConfigurationActions,
     modifier: Modifier = Modifier,
 ) {
-
     when (configurationViewState) {
         is ConfigurationViewState.Loaded ->
             ConfigurationViewLoaded(
@@ -150,7 +141,10 @@ fun ConfigurationView(
 
 @Composable
 fun ConfigurationViewTooLowVersion(dataWedgeVersion: DataWedgeVersion, modifier: Modifier) {
-    Text("Datawedge version ${dataWedgeVersion.dataWedgeVersion} is not configurable")
+    Text(
+        modifier = modifier,
+        text = "Datawedge version ${dataWedgeVersion.dataWedgeVersion} is not configurable"
+    )
 }
 
 @Composable
@@ -159,7 +153,6 @@ fun ConfigurationViewLoading(
 ) {
     CircularProgressIndicator(modifier = modifier)
 }
-
 
 @Preview
 @Composable
@@ -204,6 +197,7 @@ fun ConfigurationViewLoadedPreview() {
     }
 }
 
+@Suppress("LongMethod")
 @Composable
 fun ConfigurationViewLoaded(
     configurationViewState: ConfigurationViewState.Loaded,
@@ -219,7 +213,6 @@ fun ConfigurationViewLoaded(
         Text(text = "Active Profile")
         Text(text = configurationViewState.currentProfileName)
         Row {
-
             SwitchWithLabel(
                 checked = configurationViewState.ean8Enabled,
                 onCheckedChange = { configurationActions.ean8(it) },
@@ -247,8 +240,10 @@ fun ConfigurationViewLoaded(
         var expanded by rememberSaveable { mutableStateOf(false) }
         Text(text = "Available Scanners")
         Text(modifier = Modifier.clickable { expanded = true }, text = "Current item")
-        DropdownMenu(expanded = expanded,
-            onDismissRequest = { expanded = false }) {
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
             configurationViewState.scanners.forEach {
                 DropdownMenuItem(
                     text = { Text(it.scannerName) },

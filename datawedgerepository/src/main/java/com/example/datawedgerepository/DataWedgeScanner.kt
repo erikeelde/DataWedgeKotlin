@@ -21,7 +21,6 @@ data class DataWedgeScanner(
                 scannerName,
                 scannerIndex
             )
-
         }
     }
 }

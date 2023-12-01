@@ -53,7 +53,6 @@ fun SwitchWithLabel(
         verticalAlignment = Alignment.CenterVertically
 
     ) {
-
         labelContent()
         Spacer(modifier = Modifier.padding(start = 8.dp))
         Switch(
