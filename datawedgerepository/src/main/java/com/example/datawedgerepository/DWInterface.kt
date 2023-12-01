@@ -45,11 +45,6 @@ class DWInterface(private val applicationContext: Context) {
         const val DATAWEDGE_SEND_SET_SCANNER_INPUT_DISABLE = "DISABLE_PLUGIN"
 
         const val DATAWEDGE_SEND_SET_SOFT_SCAN = "com.symbol.datawedge.api.SOFT_SCAN_TRIGGER"
-
-        // Use "0" for Start Activity, "1" for Start Service, "2" for Broadcast
-        const val PROFILE_INTENT_START_ACTIVITY = "0"
-        const val PROFILE_INTENT_START_SERVICE = "1"
-        const val PROFILE_INTENT_START_BROADCAST = "2"
     }
 
     fun sendCommandString(

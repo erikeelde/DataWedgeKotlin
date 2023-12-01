@@ -8,7 +8,6 @@ import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.darryncampbell.datawedgekotlin.scan.ScanViewModel
 import com.example.datawedgerepository.DWInterface
-import com.example.datawedgerepository.DataWedgeRepository
 import com.example.datawedgerepository.DataWedgeScan
 import kotlinx.coroutines.launch
 
@@ -33,11 +32,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        val dataWedgeRepository = DataWedgeRepository.getInstance()
 
-        if (dataWedgeRepository.isScanIntent(intent)) {
+        if (DataWedgeHolder.get().isScanIntent(intent)) {
             lifecycleScope.launch {
-                dataWedgeRepository.addScan(DataWedgeScan.fromIntent(intent))
+                DataWedgeHolder.get().addScan(DataWedgeScan.fromIntent(intent))
             }
         }
     }

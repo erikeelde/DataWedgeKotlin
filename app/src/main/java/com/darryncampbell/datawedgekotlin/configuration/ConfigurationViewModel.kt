@@ -8,12 +8,12 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.darryncampbell.datawedgekotlin.DataWedgeHolder
 import com.example.datawedgerepository.DWInterface
 import com.darryncampbell.datawedgekotlin.ScansPersister
 import com.example.datawedgerepository.DataWedgeRepository
 import com.example.datawedgerepository.DataWedgeScanner
 import com.example.datawedgerepository.DataWedgeVersion
-import com.darryncampbell.datawedgekotlin.getInstance
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -41,7 +41,7 @@ class ConfigurationViewModel(
 ) : ViewModel() {
     private val dwInterface = DWInterface(applicationContext = application.applicationContext)
     private val scansPersister = ScansPersister(applicationContext = application.applicationContext)
-    private val dataWedgeRepository = DataWedgeRepository.getInstance()
+    private val dataWedgeRepository = DataWedgeHolder.get()
 
     internal val state: MutableStateFlow<ConfigurationViewState> =
         MutableStateFlow(ConfigurationViewState.Loading)

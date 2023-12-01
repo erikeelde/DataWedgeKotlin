@@ -10,11 +10,6 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         AndroidLogcatLogger.installOnDebuggableApp(this, minPriority = LogPriority.VERBOSE)
-        dataWedgeRepository = DataWedgeRepositoryImpl(this.applicationContext)
+        DataWedgeHolder.init(this.applicationContext)
     }
-}
-
-private lateinit var dataWedgeRepository: DataWedgeRepository
-fun DataWedgeRepository.Companion.getInstance(): DataWedgeRepository {
-    return dataWedgeRepository
 }

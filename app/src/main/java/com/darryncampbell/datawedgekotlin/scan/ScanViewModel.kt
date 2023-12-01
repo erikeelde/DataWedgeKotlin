@@ -7,13 +7,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.darryncampbell.datawedgekotlin.DataWedgeHolder
 import com.darryncampbell.datawedgekotlin.MainActivity
 import com.darryncampbell.datawedgekotlin.ScansPersister
-import com.darryncampbell.datawedgekotlin.getInstance
 import com.example.datawedgerepository.DWInterface
-import com.example.datawedgerepository.DWInterface.Companion.PROFILE_INTENT_START_ACTIVITY
-import com.example.datawedgerepository.DataWedgeRepository
 import com.example.datawedgerepository.DataWedgeScan
+import com.example.datawedgerepository.IntentOutputIntentDelivery
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -28,7 +27,7 @@ class ScanViewModel(applicationContext: Context, savedStateHandle: SavedStateHan
 
     private val dwInterface: DWInterface = DWInterface(applicationContext = applicationContext)
 
-    private val dataWedgeRepository = DataWedgeRepository.getInstance()
+    private val dataWedgeRepository = DataWedgeHolder.get()
 
     internal val state: MutableStateFlow<ScanViewState> = MutableStateFlow(ScanViewState.Loading)
 
@@ -40,7 +39,7 @@ class ScanViewModel(applicationContext: Context, savedStateHandle: SavedStateHan
                         MainActivity.PROFILE_NAME,
                         applicationContext.packageName,
                         MainActivity.PROFILE_INTENT_ACTION,
-                        PROFILE_INTENT_START_ACTIVITY
+                        IntentOutputIntentDelivery.Activity
                     )
             }
         }
