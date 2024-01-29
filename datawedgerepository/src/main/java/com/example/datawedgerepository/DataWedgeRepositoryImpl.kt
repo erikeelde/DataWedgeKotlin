@@ -173,8 +173,21 @@ class DataWedgeRepositoryImpl(applicationContext: Context) : DataWedgeRepository
         //  For readability, I have kept the bundle keys as Strings rather than constants.
         val configurationBundle =
             receivedIntent.getBundleExtra(DWInterface.DATAWEDGE_RETURN_GET_CONFIG)!!
-        val pluginConfig =
-            configurationBundle.getParcelableArrayList<Bundle>("PLUGIN_CONFIG") as ArrayList<Bundle>
+
+        val pluginConfig: ArrayList<Bundle> =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                configurationBundle
+                    .getParcelableArrayList(
+                        "PLUGIN_CONFIG",
+                        Bundle::class.java
+                    ) ?: arrayListOf()
+            } else {
+                configurationBundle
+                    .getParcelableArrayList(
+                        "PLUGIN_CONFIG"
+                    ) ?: arrayListOf()
+            }
+
         val barcodeProps = pluginConfig.get(0).getBundle("PARAM_LIST")!!
 
         return DataWedgeConfig.fromBundle(barcodeProps)
